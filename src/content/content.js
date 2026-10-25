@@ -102,6 +102,7 @@
   }
   function apply(next) {
     state = next;
+    picking = state.picking !== false;
     if (!state.active) {
       pending = null;
       editor.hidden = true;
@@ -246,7 +247,11 @@
   $('.delete').addEventListener('click', async () => {
     if (pending && await mutate({ type: 'delete', id: pending.id })) cancel();
   });
-  $('.pick').addEventListener('click', () => { picking = !picking; cancel(); });
+  $('.pick').addEventListener('click', () => {
+    picking = !picking;
+    request({ type: 'picking', value: picking }).catch(error => toast(error.message));
+    cancel();
+  });
   $('.visibility').addEventListener('click', () => { markersVisible = !markersVisible; sync(); });
   $('.close').addEventListener('click', () => mutate({ type: 'mode', active: false }));
   $('.clear').addEventListener('click', async () => {

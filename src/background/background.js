@@ -1,6 +1,6 @@
 'use strict';
 const queues = new Map();
-const fresh = () => ({ active: false, items: [], nextN: 1 });
+const fresh = () => ({ active: false, picking: true, items: [], nextN: 1 });
 function enqueue(tabId, operation) {
   const task = (queues.get(tabId) || Promise.resolve()).catch(() => {}).then(operation);
   queues.set(tabId, task);
@@ -13,6 +13,7 @@ async function update(tabId, message) {
   switch (message.type) {
     case 'toggle': state.active = !state.active; break;
     case 'mode': state.active = Boolean(message.active); break;
+    case 'picking': state.picking = Boolean(message.value); break;
     case 'save': {
       const item = message.item;
       if (!item || typeof item.id !== 'string' || !String(item.comment || '').trim()) throw Error('Invalid annotation');
@@ -46,7 +47,7 @@ async function update(tabId, message) {
   return state;
 }
 chrome.runtime.onMessage.addListener((message, sender, respond) => {
-  if (!sender.tab || !['get', 'mode', 'save', 'delete', 'clear', 'sent'].includes(message?.type)) return false;
+  if (!sender.tab || !['get', 'mode', 'picking', 'save', 'delete', 'clear', 'sent'].includes(message?.type)) return false;
   enqueue(sender.tab.id, () => update(sender.tab.id, message))
     .then(respond, () => respond({ error: 'saveFailed' }));
   return true;
