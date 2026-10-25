@@ -25,6 +25,9 @@ async function update(tabId, message) {
       entry.viewport = {};
       for (const field of ['x', 'y', 'w', 'h']) entry.rect[field] = Number(item.rect?.[field]) || 0;
       for (const field of ['w', 'h']) entry.viewport[field] = Number(item.viewport?.[field]) || 0;
+      // Click point as a 0-1 fraction of the element box.
+      entry.point = {};
+      for (const field of ['x', 'y']) entry.point[field] = Math.min(1, Math.max(0, Number(item.point?.[field]))) || 0;
       entry.n = index < 0 ? state.nextN++ : state.items[index].n;
       if (index < 0) state.items.push(entry);
       else state.items[index] = entry;
@@ -36,6 +39,9 @@ async function update(tabId, message) {
     case 'get': return state;
     default: throw Error('Unknown request');
   }
+  // Renumber so deleted and sent annotations free their numbers.
+  state.items.forEach((entry, i) => { entry.n = i + 1; });
+  state.nextN = state.items.length + 1;
   await chrome.storage.session.set({ [key]: state });
   return state;
 }

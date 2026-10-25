@@ -129,7 +129,8 @@
   function anchor(item) {
     const el = find(item);
     const rect = el ? pageRect(el) : item.rect;
-    return { x: rect.x + rect.w - scrollX, y: rect.y - scrollY, found: Boolean(el) };
+    const point = item.point || { x: 1, y: 0 };
+    return { x: rect.x + rect.w * point.x - scrollX, y: rect.y + rect.h * point.y - scrollY, found: Boolean(el) };
   }
   function renderMarkers() {
     $('.markers').replaceChildren();
@@ -190,11 +191,13 @@
     sync();
     input.focus();
   }
-  function pick(el) {
+  function pick(el, event) {
     if (!el) return;
+    const box = el.getBoundingClientRect();
+    const fraction = (value, start, size) => size ? Math.min(1, Math.max(0, (value - start) / size)) : 0;
     openEditor({ id: crypto.randomUUID(), url: location.href, title: document.title,
       selector: buildSelector(el), tag: el.tagName.toLowerCase(), text: textSnippet(el),
-      rect: pageRect(el), viewport: { w: innerWidth, h: innerHeight }, comment: '', createdAt: new Date().toISOString() });
+      rect: pageRect(el), point: { x: fraction(event.clientX, box.x, box.width), y: fraction(event.clientY, box.y, box.height) }, viewport: { w: innerWidth, h: innerHeight }, comment: '', createdAt: new Date().toISOString() });
   }
   document.addEventListener('pointermove', event => {
     if (state.active && picking && !pending && !isUI(event)) {
@@ -207,7 +210,7 @@
       if (!state.active || !picking || isUI(event)) return;
       event.preventDefault();
       event.stopImmediatePropagation();
-      if (type === 'click' && !pending) pick(targetAt(event));
+      if (type === 'click' && !pending) pick(targetAt(event), event);
     }, true);
   }
   for (const type of ['click', 'pointerdown', 'pointerup', 'keydown', 'keyup']) {

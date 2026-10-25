@@ -44,7 +44,17 @@
       for (const child of node.childNodes) read(child);
     }
     read(el);
-    return text.replace(/\s+/g, ' ').trim().slice(0, 80);
+    const visible = text.replace(/\s+/g, ' ').trim().slice(0, 80);
+    if (visible || !el.getAttribute) return visible;
+    // Icon-only elements: fall back to an accessible name.
+    const label = ['aria-label', 'title', 'alt'].map(name => el.getAttribute(name)).find(Boolean);
+    return String(label || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+  }
+  function position(item) {
+    const r = item.rect;
+    if (!r) return '';
+    const at = item.point ? ` click ${Math.round(r.x + r.w * item.point.x)},${Math.round(r.y + r.h * item.point.y)}` : '';
+    return `- Position: page ${Math.round(r.x)},${Math.round(r.y)} size ${Math.round(r.w)}x${Math.round(r.h)}${at}\n`;
   }
   function formatMarkdown(items, meta = {}) {
     const line = value => String(value ?? '').replace(/[\r\n]+/g, ' ');
@@ -52,7 +62,7 @@
       const selector = line(item.selector);
       const fence = '`'.repeat(Math.max(1, ...Array.from(selector.matchAll(/`+/g), m => m[0].length + 1)));
       const pad = /^`|`$/.test(selector) ? ' ' : '';
-      return `## ${item.n}. ${line(item.title || meta.title)}\n- URL: ${line(item.url || meta.url)}\n- Element: ${fence}${pad}${selector}${pad}${fence} (${line(item.tag)}) "${line(item.text).replace(/[\\"]/g, '\\$&')}"\n- Comment: ${String(item.comment).replace(/\r\n?/g, '\n').replace(/\n/g, '\n  ')}`;
+      return `## ${item.n}. ${line(item.title || meta.title)}\n- URL: ${line(item.url || meta.url)}\n- Element: ${fence}${pad}${selector}${pad}${fence} (${line(item.tag)}) "${line(item.text).replace(/[\\"]/g, '\\$&')}"\n${position(item)}- Comment: ${String(item.comment).replace(/\r\n?/g, '\n').replace(/\n/g, '\n  ')}`;
     });
     return [`# Page annotations (${items.length})`, ...blocks].join('\n\n');
   }
