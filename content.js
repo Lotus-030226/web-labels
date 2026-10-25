@@ -51,7 +51,7 @@
     </div>
     <div class="toolbar" role="toolbar" aria-label="網頁標註" hidden>
       <button class="handle" aria-label="拖曳工具列" title="拖曳工具列">⠿</button><span class="count"></span>
-      <button class="pick" aria-label="暫停選取">暫停</button>
+      <button class="pick" aria-label="暫停選取">選取中</button>
       <button class="visibility" aria-label="隱藏標記">隱藏</button>
       <button class="clear" aria-label="清除全部">清除</button>
       <button class="send">傳送</button><button class="close" aria-label="關閉標註">×</button>
@@ -108,7 +108,8 @@
     $('.dot').hidden = !state.active || !pending;
     const here = state.items.filter(item => item.url === location.href).length;
     $('.count').textContent = `標註中 · ${state.items.length}` + (here === state.items.length ? '' : `（本頁 ${here}）`);
-    $('.pick').textContent = picking ? '暫停' : '選取';
+    $('.pick').textContent = picking ? '選取中' : '已暫停';
+    $('.pick').title = picking ? '點擊暫停選取' : '點擊恢復選取';
     $('.pick').setAttribute('aria-label', picking ? '暫停選取' : '繼續選取');
     $('.pick').setAttribute('aria-pressed', String(picking));
     $('.visibility').textContent = markersVisible ? '隱藏' : '顯示';
