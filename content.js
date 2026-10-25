@@ -203,7 +203,7 @@
     } else { hovered = null; outline.hidden = true; }
   }, true);
   for (const type of ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'dblclick', 'auxclick', 'contextmenu']) {
-    document.addEventListener(type, event => {
+    window.addEventListener(type, event => {
       if (!state.active || !picking || isUI(event)) return;
       event.preventDefault();
       event.stopImmediatePropagation();

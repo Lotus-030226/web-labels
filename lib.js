@@ -29,25 +29,30 @@
   }
   function textSnippet(el) {
     const excluded = /^(INPUT|TEXTAREA|SELECT|SCRIPT|STYLE|NOSCRIPT)$/i;
+    let text = '';
+    // Stop walking once enough text is collected.
     function read(node) {
-      if (excluded.test(node.tagName || '')) return '';
-      if (!node.childNodes) return node.innerText || '';
-      if (node.nodeType === 3) return node.textContent;
+      if (text.replace(/\s+/g, ' ').trim().length >= 80) return;
+      if (excluded.test(node.tagName || '')) return;
+      if (!node.childNodes) { text += ` ${node.innerText || ''}`; return; }
+      if (node.nodeType === 3) { text += ` ${node.textContent}`; return; }
       const view = node.ownerDocument?.defaultView;
       if (node.nodeType === 1 && view) {
         const css = view.getComputedStyle(node);
-        if (css.display === 'none' || css.visibility === 'hidden' || node.hidden) return '';
+        if (css.display === 'none' || css.visibility === 'hidden' || node.hidden) return;
       }
-      return Array.from(node.childNodes, read).join(' ');
+      for (const child of node.childNodes) read(child);
     }
-    return read(el).replace(/\s+/g, ' ').trim().slice(0, 80);
+    read(el);
+    return text.replace(/\s+/g, ' ').trim().slice(0, 80);
   }
   function formatMarkdown(items, meta = {}) {
     const line = value => String(value ?? '').replace(/[\r\n]+/g, ' ');
     const blocks = [...items].sort((a, b) => a.n - b.n).map(item => {
       const selector = line(item.selector);
       const fence = '`'.repeat(Math.max(1, ...Array.from(selector.matchAll(/`+/g), m => m[0].length + 1)));
-      return `## ${item.n}. ${line(item.title || meta.title)}\n- URL: ${line(item.url || meta.url)}\n- Element: ${fence}${selector}${fence} (${line(item.tag)}) "${line(item.text)}"\n- Comment: ${String(item.comment).replace(/\r\n?/g, '\n').replace(/\n/g, '\n  ')}`;
+      const pad = /^`|`$/.test(selector) ? ' ' : '';
+      return `## ${item.n}. ${line(item.title || meta.title)}\n- URL: ${line(item.url || meta.url)}\n- Element: ${fence}${pad}${selector}${pad}${fence} (${line(item.tag)}) "${line(item.text).replace(/[\\"]/g, '\\$&')}"\n- Comment: ${String(item.comment).replace(/\r\n?/g, '\n').replace(/\n/g, '\n  ')}`;
     });
     return [`# Page annotations (${items.length})`, ...blocks].join('\n\n');
   }
