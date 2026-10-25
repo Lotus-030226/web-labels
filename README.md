@@ -34,18 +34,16 @@ Change the shortcut at `chrome://extensions/shortcuts` if another command uses i
 
    ![Numbered markers and the annotation toolbar](assets/screenshots/3-markers.png)
 
-4. Click **傳送** (Send) to copy all notes as Markdown. Paste the result into a chat or an issue.
+4. Click **Send** to copy all notes as Markdown. Paste the result into a chat or an issue.
 
    ![Notes copied as Markdown](assets/screenshots/4-markdown.png)
 
-The extension buttons currently show Traditional Chinese text:
-
 | Button | Action |
 | --- | --- |
-| 選取中 / 已暫停 | Pause or resume element selection. Pause selection to interact with the page. |
-| 隱藏 / 顯示 | Hide or show markers. |
-| 清除 | Click twice to delete all notes. |
-| 傳送 | Copy all notes as Markdown. Successful copying clears the copied notes. Failed copying keeps them. |
+| Selecting / Paused | Pause or resume element selection. Pause selection to interact with the page. |
+| Hide / Show | Hide or show markers. |
+| Clear | Click twice to delete all notes. |
+| Send | Copy all notes as Markdown. Successful copying clears the copied notes. Failed copying keeps them. |
 | × | Close the toolbar and keep the notes. |
 
 Drag the bottom toolbar to move it. Press Shift+Enter for a new line in a note. Press Esc to cancel.
@@ -55,6 +53,11 @@ Mode, notes, and numbering return after navigation or reload in the same tab.
 Only markers for the current full URL appear. Each tab keeps its own data.
 The extension stores data in `chrome.storage.session`.
 Data disappears when the browser session ends or you disable or reload the extension.
+
+## Language
+
+Right-click the extension icon, then choose **Options**. Select **English** (default), **繁體中文** (Traditional Chinese), or **简体中文** (Simplified Chinese).
+Open tabs update at once. Copied Markdown stays in English.
 
 ## Limits
 

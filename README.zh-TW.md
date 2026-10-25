@@ -34,11 +34,9 @@ Chrome Manifest V3 擴充功能：選取網頁元素、寫註解，累積後一�
 
    ![編號標記與標註工具列](assets/screenshots/3-markers.png)
 
-4. 按「傳送」將全部註解複製成 Markdown，再貼到對話或議題中。
+4. 按 **Send**（傳送）將全部註解複製成 Markdown，再貼到對話或議題中。
 
    ![複製成 Markdown 的註解](assets/screenshots/4-markdown.png)
-
-擴充功能的按鈕目前使用繁體中文：
 
 | 按鈕 | 功能 |
 | --- | --- |
@@ -52,6 +50,11 @@ Chrome Manifest V3 擴充功能：選取網頁元素、寫註解，累積後一�
 
 同一分頁導頁或重新載入後，模式、註解和編號會恢復；只顯示目前完整 URL 的標記。各分頁獨立。
 資料存在 `chrome.storage.session`，結束瀏覽器工作階段、停用或重新載入擴充功能後會消失。
+
+## 語言
+
+在擴充功能圖示上按右鍵，再選「選項」（Options）。可選 **English**（預設）、**繁體中文** 或 **简体中文**。
+已開啟的分頁會立即更新。複製的 Markdown 保持英文。
 
 ## 限制
 

@@ -44,17 +44,17 @@
   </style><div class="root">
     <div class="surface" hidden></div><div class="outline" hidden></div><div class="markers"></div>
     <div class="dot" hidden></div>
-    <div class="editor" role="dialog" aria-label="編輯註解" hidden>
-      <div class="hint">Enter 儲存 · Shift+Enter 換行 · Esc 取消</div>
-      <textarea aria-label="註解" placeholder="寫下你的註解…"></textarea>
-      <div class="editor-actions"><button class="delete" aria-label="刪除註解">刪除</button><button class="cancel">取消</button><button class="check" aria-label="儲存註解">✓</button></div>
+    <div class="editor" role="dialog" hidden>
+      <div class="hint"></div>
+      <textarea></textarea>
+      <div class="editor-actions"><button class="delete"></button><button class="cancel"></button><button class="check">✓</button></div>
     </div>
-    <div class="toolbar" role="toolbar" aria-label="網頁標註" hidden>
-      <button class="handle" aria-label="拖曳工具列" title="拖曳工具列">⠿</button><span class="count"></span>
-      <button class="pick" aria-label="暫停選取">選取中</button>
-      <button class="visibility" aria-label="隱藏標記">隱藏</button>
-      <button class="clear" aria-label="清除全部">清除</button>
-      <button class="send">傳送</button><button class="close" aria-label="關閉標註">×</button>
+    <div class="toolbar" role="toolbar" hidden>
+      <button class="handle">⠿</button><span class="count"></span>
+      <button class="pick"></button>
+      <button class="visibility"></button>
+      <button class="clear"></button>
+      <button class="send"></button><button class="close">×</button>
     </div><div class="toast" role="status" hidden></div>
   </div>`;
   const $ = selector => shadow.querySelector(selector);
@@ -63,6 +63,9 @@
   const editor = $('.editor');
   const input = $('textarea');
   const toolbar = $('.toolbar');
+  const { LANGUAGES, STRINGS, translate } = globalThis.WebLabelsStrings;
+  let language = 'en';
+  const t = (key, params) => translate(language, key, params);
   let state = { active: false, items: [] };
   let picking = true;
   let markersVisible = true;
@@ -82,8 +85,13 @@
     toastTimer = setTimeout(() => { $('.toast').hidden = true; }, 3200);
   }
   async function request(message) {
-    const result = await chrome.runtime.sendMessage(message);
-    if (!result || result.error) throw Error(result?.error || '無法連線，請重新載入頁面');
+    let result;
+    try { result = await chrome.runtime.sendMessage(message); }
+    catch { throw Error(t('connectionFailed')); }
+    if (!result || result.error) {
+      const key = Object.hasOwn(STRINGS.en, result?.error) ? result.error : 'connectionFailed';
+      throw Error(t(key));
+    }
     return result;
   }
   function cancel() {
@@ -107,13 +115,13 @@
     outline.hidden = surface.hidden || !hovered;
     $('.dot').hidden = !state.active || !pending;
     const here = state.items.filter(item => item.url === location.href).length;
-    $('.count').textContent = `標註中 · ${state.items.length}` + (here === state.items.length ? '' : `（本頁 ${here}）`);
-    $('.pick').textContent = picking ? '選取中' : '已暫停';
-    $('.pick').title = picking ? '點擊暫停選取' : '點擊恢復選取';
-    $('.pick').setAttribute('aria-label', picking ? '暫停選取' : '繼續選取');
+    $('.count').textContent = t('count', { n: state.items.length }) + (here === state.items.length ? '' : t('countHere', { m: here }));
+    $('.pick').textContent = t(picking ? 'picking' : 'paused');
+    $('.pick').title = t(picking ? 'pauseHint' : 'resumeHint');
+    $('.pick').setAttribute('aria-label', t(picking ? 'pauseSelection' : 'resumeSelection'));
     $('.pick').setAttribute('aria-pressed', String(picking));
-    $('.visibility').textContent = markersVisible ? '隱藏' : '顯示';
-    $('.visibility').setAttribute('aria-label', markersVisible ? '隱藏標記' : '顯示標記');
+    $('.visibility').textContent = t(markersVisible ? 'hide' : 'show');
+    $('.visibility').setAttribute('aria-label', t(markersVisible ? 'hideMarkers' : 'showMarkers'));
     $('.send').disabled = busy || !state.items.length;
     $('.clear').disabled = busy || !state.items.length;
     $('.markers').hidden = !state.active || !markersVisible;
@@ -144,7 +152,7 @@
       const badge = document.createElement('button');
       badge.className = 'badge';
       badge.textContent = item.n;
-      badge.setAttribute('aria-label', `編輯註解 ${item.n}`);
+      badge.setAttribute('aria-label', t('editNumber', { n: item.n }));
       badge.addEventListener('click', () => openEditor(item));
       const bubble = document.createElement('div');
       bubble.className = 'bubble';
@@ -165,7 +173,7 @@
       node.style.top = `${p.y - 14}px`;
       node.style.flexDirection = flip ? 'row-reverse' : 'row';
       node.classList.toggle('dim', !p.found);
-      node.title = p.found ? '' : '找不到原元素，使用儲存位置';
+      node.title = p.found ? '' : t('notFound');
     }
     if (hovered?.isConnected && !surface.hidden) {
       const r = hovered.getBoundingClientRect();
@@ -245,14 +253,14 @@
     if (clearArmed) {
       if (await mutate({ type: 'clear' })) cancel();
       clearArmed = false;
-      $('.clear').textContent = '清除';
+      $('.clear').textContent = t('clear');
       $('.clear').classList.remove('armed');
     } else {
       clearArmed = true;
-      $('.clear').textContent = '再按清除';
+      $('.clear').textContent = t('clearConfirm');
       $('.clear').classList.add('armed');
       clearTimeout(clearTimer);
-      clearTimer = setTimeout(() => { clearArmed = false; $('.clear').textContent = '清除'; $('.clear').classList.remove('armed'); }, 3000);
+      clearTimer = setTimeout(() => { clearArmed = false; $('.clear').textContent = t('clear'); $('.clear').classList.remove('armed'); }, 3000);
     }
   });
   async function copy(text) {
@@ -265,7 +273,7 @@
       field.select();
       const copied = document.execCommand('copy');
       field.remove();
-      if (!copied) throw Error('複製失敗，註解已保留，請重試');
+      if (!copied) throw Error(t('copyFailed'));
     }
   }
   $('.send').addEventListener('click', async () => {
@@ -277,7 +285,7 @@
       await copy(formatMarkdown(items, { title: document.title, url: location.href }));
       if (await mutate({ type: 'sent', ids: items.map(item => item.id) })) {
         cancel();
-        toast(`已複製 ${items.length} 則註解`);
+        toast(t('copied', { n: items.length }));
       }
     } catch (error) { toast(error.message); }
     busy = false;
@@ -310,5 +318,36 @@
   chrome.runtime.onMessage.addListener(message => {
     if (message.type === 'state') apply(message.state);
   });
+  function renderText() {
+    for (const [selector, key] of Object.entries({ '.hint': 'hint', '.delete': 'delete', '.cancel': 'cancel', '.send': 'send' })) {
+      $(selector).textContent = t(key);
+    }
+    for (const [selector, key] of Object.entries({ '.editor': 'editNote', 'textarea': 'note', '.delete': 'deleteNote', '.check': 'saveNote', '.toolbar': 'toolbar', '.handle': 'drag', '.clear': 'clearAll', '.close': 'close' })) {
+      $(selector).setAttribute('aria-label', t(key));
+    }
+    input.placeholder = t('placeholder');
+    $('.handle').title = t('drag');
+    $('.clear').textContent = t(clearArmed ? 'clearConfirm' : 'clear');
+    for (const { node, item } of markerNodes) {
+      node.children[0].setAttribute('aria-label', t('editNumber', { n: item.n }));
+      node.title = anchor(item).found ? '' : t('notFound');
+    }
+  }
+  function setLanguage(value) {
+    language = LANGUAGES.includes(value) ? value : 'en';
+    renderText();
+    sync();
+  }
+  renderText();
+  let languageRevision = 0;
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== 'local' || !Object.hasOwn(changes, 'language')) return;
+    languageRevision++;
+    setLanguage(changes.language.newValue);
+  });
+  const initialRevision = languageRevision;
+  chrome.storage.local.get('language').then(saved => {
+    if (languageRevision === initialRevision) setLanguage(saved.language);
+  }).catch(() => {});
   request({ type: 'get' }).then(apply).catch(error => toast(error.message));
 })();

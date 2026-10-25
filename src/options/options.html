@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Web Labels options</title>
+  <style>
+    body { padding: 20px; font: 14px/1.5 system-ui, sans-serif; min-width: 260px; }
+    select { margin-left: 12px; padding: 6px; font: inherit; }
+  </style>
+</head>
+<body>
+  <h1>Web Labels options</h1>
+  <label><span id="language-label">Language</span><select id="language">
+    <option value="en">English</option>
+    <option value="zh-TW">繁體中文</option>
+    <option value="zh-CN">简体中文</option>
+  </select></label>
+  <p id="status" role="status" hidden></p>
+  <script src="../i18n/strings.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

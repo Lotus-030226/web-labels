@@ -1,10 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "網頁標註",
-  "version": "1.0.0",
-  "description": "點選網頁元素、撰寫註解，並複製為 Markdown。",
-  "permissions": ["storage", "clipboardWrite", "activeTab", "scripting"],
-  "background": { "service_worker": "src/background/background.js" },
+  "name": "Web Labels",
+  "version": "1.1.0",
+  "description": "Select page elements, add notes, and copy them as Markdown.",
+  "permissions": [
+    "storage",
+    "clipboardWrite",
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "src/background/background.js"
+  },
   "icons": {
     "16": "assets/icons/icon-16.png",
     "32": "assets/icons/icon-32.png",
@@ -12,7 +19,7 @@
     "128": "assets/icons/icon-128.png"
   },
   "action": {
-    "default_title": "標註",
+    "default_title": "Web Labels",
     "default_icon": {
       "16": "assets/icons/icon-16.png",
       "32": "assets/icons/icon-32.png"
@@ -20,13 +27,27 @@
   },
   "commands": {
     "toggle-annotate": {
-      "suggested_key": { "default": "Alt+Shift+A" },
-      "description": "切換網頁標註"
+      "suggested_key": {
+        "default": "Alt+Shift+A"
+      },
+      "description": "Toggle page annotations"
     }
   },
-  "content_scripts": [{
-    "matches": ["<all_urls>"],
-    "js": ["src/content/lib.js", "src/content/content.js"],
-    "run_at": "document_idle"
-  }]
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "src/i18n/strings.js",
+        "src/content/lib.js",
+        "src/content/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": false
+  }
 }

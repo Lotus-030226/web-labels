@@ -48,7 +48,7 @@ async function update(tabId, message) {
 chrome.runtime.onMessage.addListener((message, sender, respond) => {
   if (!sender.tab || !['get', 'mode', 'save', 'delete', 'clear', 'sent'].includes(message?.type)) return false;
   enqueue(sender.tab.id, () => update(sender.tab.id, message))
-    .then(respond, () => respond({ error: '儲存失敗，請重試' }));
+    .then(respond, () => respond({ error: 'saveFailed' }));
   return true;
 });
 async function toggle(tab) {
@@ -59,7 +59,7 @@ async function toggle(tab) {
       await chrome.tabs.sendMessage(tab.id, { type: 'state', state });
     } catch {
       // Tabs opened before install have no content script yet. Inject it, then resend.
-      await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['src/content/lib.js', 'src/content/content.js'] });
+      await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['src/i18n/strings.js', 'src/content/lib.js', 'src/content/content.js'] });
       await chrome.tabs.sendMessage(tab.id, { type: 'state', state });
     }
     await chrome.action.setBadgeText({ tabId: tab.id, text: '' });
