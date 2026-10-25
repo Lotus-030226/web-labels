@@ -1,38 +1,99 @@
-# 網頁標註插件
+English | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md)
 
-Chrome Manifest V3 擴充功能。選取網頁元素、寫註解，累積後一次複製成 Markdown。不需建置或安裝套件。
+# Web Labels
 
-## 安裝
+A Chrome Manifest V3 extension: select page elements, add notes, and copy them together as Markdown.
 
-1. 開啟 Chrome 的 `chrome://extensions`。
-2. 開啟「開發人員模式」，按「載入未封裝項目」。
-3. 選擇本專案資料夾。
-4. 重新載入要標註的網頁，點擴充功能「標註」，或按 `Alt+Shift+A`。
+## Install
 
-快捷鍵衝突時，可在 `chrome://extensions/shortcuts` 修改。
+1. On GitHub, click **Code**, then **Download ZIP**, and unzip the archive. Or clone the repository:
 
-## 使用
+   ```sh
+   git clone https://github.com/Lotus-030226/web-labels.git
+   ```
 
-移動游標可預覽藍框，點一下選取元素。輸入註解後按 Enter 或 ✓ 儲存；Shift+Enter 換行，Esc 取消。點編號可編輯或刪除。
+2. Open `chrome://extensions` in Chrome.
+3. Turn on **Developer mode**. Click **Load unpacked**.
+4. Select the folder that contains `manifest.json`.
+5. Keep that folder in place. Chrome loads the extension from it.
+6. Reload open tabs before you annotate them.
 
-底部工具列可拖曳。「選取中」按鈕顯示目前狀態，點一下切成「已暫停」以恢復網頁操作，再點一下恢復選取；「隱藏」切換標記；連按兩次「清除」刪除全部註解。「傳送」只複製 Markdown，成功後清空已複製的註解。複製失敗時保留內容。
+Change the shortcut at `chrome://extensions/shortcuts` if another command uses it.
 
-關閉工具列會保留註解。同一分頁導頁或重新載入後，模式、註解和編號會恢復；只顯示目前完整 URL 的標記。各分頁獨立。資料存在 `chrome.storage.session`，結束瀏覽器工作階段、停用或重新載入擴充功能後會消失。
+## Usage
 
-## 限制
+1. Click the extension toolbar button or press `Alt+Shift+A`. Point at an element to show its blue outline.
 
-- Chrome 系統頁、Chrome 線上應用程式商店等受保護頁面不允許內容腳本。
-- 本機檔案與無痕頁面需要在擴充功能設定啟用對應存取權限。
-- 不支援 iframe 內部及網站自己的 Shadow DOM 元素。
-- 網站若改變 DOM、id 或 class，可能找不到原元素；此時以半透明標記顯示儲存位置。
-- 不讀取 input、textarea、select 內容；包含它們的父元素也排除這些內容。註解由使用者自行輸入。
-- 只處理游標點選。網站既有的捕獲階段處理器可能早於插件執行。
-- 不包含截圖、繪圖、語音、對外傳送或跨瀏覽器同步。
+   ![Blue outline around a page element](assets/screenshots/1-pick.png)
 
-## 驗證
+2. Click the element, enter a note, and press Enter or ✓ to save it.
 
-執行 `node --test tests/`。若環境沒有 Node.js，請先設定可用的 Node.js 路徑。
+   ![Note editor for the selected element](assets/screenshots/2-comment.png)
 
-以 `python3 -m http.server 8830 --bind 127.0.0.1 --directory .` 啟動測試頁（從專案根目錄），再用 Chrome 開啟 `http://127.0.0.1:8830/tests/content/harness.html`。測試頁用假的 Chrome API 執行真正的背景程式；sessionStorage 模擬同分頁的工作階段，複製結果顯示在頁面及 `window.__lastCopied`。勾選「模擬 Clipboard API 失敗」可驗證備援複製。驗證結束後停止伺服器。
+3. Numbered markers stay at the click point. The toolbar lets you select elements, hide markers, clear notes, and copy notes.
 
-頁面先註冊的 capture 監聽器仍可能先收到點擊（擴充功能無法保證排在最前）。
+   ![Numbered markers and the annotation toolbar](assets/screenshots/3-markers.png)
+
+4. Click **傳送** (Send) to copy all notes as Markdown. Paste the result into a chat or an issue.
+
+   ![Notes copied as Markdown](assets/screenshots/4-markdown.png)
+
+The extension buttons currently show Traditional Chinese text:
+
+| Button | Action |
+| --- | --- |
+| 選取中 / 已暫停 | Pause or resume element selection. Pause selection to interact with the page. |
+| 隱藏 / 顯示 | Hide or show markers. |
+| 清除 | Click twice to delete all notes. |
+| 傳送 | Copy all notes as Markdown. Successful copying clears the copied notes. Failed copying keeps them. |
+| × | Close the toolbar and keep the notes. |
+
+Drag the bottom toolbar to move it. Press Shift+Enter for a new line in a note. Press Esc to cancel.
+Click a numbered marker to edit or delete its note.
+
+Mode, notes, and numbering return after navigation or reload in the same tab.
+Only markers for the current full URL appear. Each tab keeps its own data.
+The extension stores data in `chrome.storage.session`.
+Data disappears when the browser session ends or you disable or reload the extension.
+
+## Limits
+
+- Chrome blocks content scripts on protected pages, including Chrome system pages and the Chrome Web Store.
+- Enable the respective extension access settings to annotate local files and incognito pages.
+- The extension cannot select elements inside iframes or website Shadow DOM trees.
+- Changes to the page DOM, element IDs, or classes can prevent the extension from finding the original element.
+  In that case, a translucent marker shows the saved position.
+- The extension excludes input, textarea, and select contents, including when it reads their parent elements. You enter notes yourself.
+- The extension handles pointer clicks only. Website capture handlers can receive clicks before the extension does.
+- The extension has no screenshots, drawing, voice input, external sending, or cross-browser synchronization.
+
+## Development
+
+You do not need a build step or package installation. Run the tests:
+
+```sh
+node --test tests/
+```
+
+If Node.js is unavailable, configure its path first.
+
+To use the test page:
+
+1. From the project root, start the server:
+
+   ```sh
+   python3 -m http.server 8830 --bind 127.0.0.1 --directory .
+   ```
+
+2. In Chrome, open `http://127.0.0.1:8830/tests/content/harness.html`.
+3. Inspect copied results on the page or in `window.__lastCopied`.
+4. Select **模擬 Clipboard API 失敗** to check fallback copying.
+5. Stop the server after verification.
+
+The test page runs the real background script with a fake Chrome API.
+It uses `sessionStorage` to simulate a session in the same tab.
+Previously registered capture listeners can still receive clicks first. The extension cannot guarantee that its handlers run first.
+
+## License
+
+[MIT](LICENSE). Copyright (c) 2026 Lotus.
