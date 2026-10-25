@@ -17,6 +17,7 @@
     button { border: 0; border-radius: 8px; background: #383a40; color: #fff; padding: 7px 10px; cursor: pointer; }
     button:hover { background: #50535d; }
     button:focus-visible, textarea:focus-visible { outline: 2px solid #78aaff; outline-offset: 2px; }
+    .clear.armed { color: #ff5a5a; font-weight: 600; }
     button:disabled { opacity: .45; cursor: default; }
     .surface { position: fixed; inset: 0; pointer-events: auto; cursor: crosshair; }
     .outline { position: fixed; border: 2px solid #3688ff; background: #3688ff15; border-radius: 3px; pointer-events: none; }
@@ -242,11 +243,13 @@
       if (await mutate({ type: 'clear' })) cancel();
       clearArmed = false;
       $('.clear').textContent = '清除';
+      $('.clear').classList.remove('armed');
     } else {
       clearArmed = true;
       $('.clear').textContent = '再按清除';
+      $('.clear').classList.add('armed');
       clearTimeout(clearTimer);
-      clearTimer = setTimeout(() => { clearArmed = false; $('.clear').textContent = '清除'; }, 3000);
+      clearTimer = setTimeout(() => { clearArmed = false; $('.clear').textContent = '清除'; $('.clear').classList.remove('armed'); }, 3000);
     }
   });
   async function copy(text) {
