@@ -5,3 +5,4 @@ node_modules/
 AGENTS.md
 .structure-v1
 tests/
+dist/
