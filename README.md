@@ -31,8 +31,8 @@ Chrome Manifest V3 擴充功能。選取網頁元素、寫註解，累積後一�
 
 ## 驗證
 
-執行 `node --test test/`。若環境沒有 Node.js，請先設定可用的 Node.js 路徑。
+執行 `node --test tests/`。若環境沒有 Node.js，請先設定可用的 Node.js 路徑。
 
-以 `python3 -m http.server 8830 --bind 127.0.0.1 --directory .` 啟動測試頁（從專案根目錄），再用 Chrome 開啟 `http://127.0.0.1:8830/test/harness.html`。測試頁用假的 Chrome API 執行真正的背景程式；sessionStorage 模擬同分頁的工作階段，複製結果顯示在頁面及 `window.__lastCopied`。勾選「模擬 Clipboard API 失敗」可驗證備援複製。驗證結束後停止伺服器。
+以 `python3 -m http.server 8830 --bind 127.0.0.1 --directory .` 啟動測試頁（從專案根目錄），再用 Chrome 開啟 `http://127.0.0.1:8830/tests/content/harness.html`。測試頁用假的 Chrome API 執行真正的背景程式；sessionStorage 模擬同分頁的工作階段，複製結果顯示在頁面及 `window.__lastCopied`。勾選「模擬 Clipboard API 失敗」可驗證備援複製。驗證結束後停止伺服器。
 
 頁面先註冊的 capture 監聽器仍可能先收到點擊（擴充功能無法保證排在最前）。

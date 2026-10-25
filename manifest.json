@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "點選網頁元素、撰寫註解，並複製為 Markdown。",
   "permissions": ["storage", "clipboardWrite", "activeTab", "scripting"],
-  "background": { "service_worker": "background.js" },
+  "background": { "service_worker": "src/background/background.js" },
   "action": { "default_title": "標註" },
   "commands": {
     "toggle-annotate": {
@@ -14,7 +14,7 @@
   },
   "content_scripts": [{
     "matches": ["<all_urls>"],
-    "js": ["lib.js", "content.js"],
+    "js": ["src/content/lib.js", "src/content/content.js"],
     "run_at": "document_idle"
   }]
 }
