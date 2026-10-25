@@ -47,11 +47,20 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
 });
 async function toggle(tab) {
   if (tab?.id == null) return;
+  const state = await enqueue(tab.id, () => update(tab.id, { type: 'toggle' }));
   try {
-    const state = await enqueue(tab.id, () => update(tab.id, { type: 'toggle' }));
-    await chrome.tabs.sendMessage(tab.id, { type: 'state', state });
+    try {
+      await chrome.tabs.sendMessage(tab.id, { type: 'state', state });
+    } catch {
+      // Tabs opened before install have no content script yet. Inject it, then resend.
+      await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['lib.js', 'content.js'] });
+      await chrome.tabs.sendMessage(tab.id, { type: 'state', state });
+    }
+    await chrome.action.setBadgeText({ tabId: tab.id, text: '' });
   } catch {
-    // Protected pages have no content script.
+    // Protected pages (chrome://, Web Store) reject injection. Undo the toggle and show a badge.
+    await enqueue(tab.id, () => update(tab.id, { type: 'mode', active: false }));
+    await chrome.action.setBadgeText({ tabId: tab.id, text: '!' });
   }
 }
 chrome.action.onClicked.addListener(toggle);

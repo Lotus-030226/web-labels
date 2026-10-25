@@ -3,7 +3,7 @@
   "name": "網頁標註",
   "version": "1.0.0",
   "description": "點選網頁元素、撰寫註解，並複製為 Markdown。",
-  "permissions": ["storage", "clipboardWrite"],
+  "permissions": ["storage", "clipboardWrite", "activeTab", "scripting"],
   "background": { "service_worker": "background.js" },
   "action": { "default_title": "標註" },
   "commands": {
