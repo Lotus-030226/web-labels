@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "網頁標註",
+  "version": "1.0.0",
+  "description": "點選網頁元素、撰寫註解，並複製為 Markdown。",
+  "permissions": ["storage", "clipboardWrite"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_title": "標註" },
+  "commands": {
+    "toggle-annotate": {
+      "suggested_key": { "default": "Alt+Shift+A" },
+      "description": "切換網頁標註"
+    }
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["lib.js", "content.js"],
+    "run_at": "document_idle"
+  }]
+}
