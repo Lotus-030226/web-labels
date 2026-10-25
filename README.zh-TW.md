@@ -6,7 +6,7 @@ Chrome Manifest V3 擴充功能：選取網頁元素、寫註解，累積後一�
 
 ## 安裝
 
-1. 在 GitHub 按 **Code → Download ZIP**，下載並解壓縮；或複製儲存庫：
+1. 從[最新版本](https://github.com/Lotus-030226/web-labels/releases/latest)下載 `web-labels-<版本>.zip` 並解壓縮；或在儲存庫頁面按 **Code → Download ZIP**；或複製儲存庫：
 
    ```sh
    git clone https://github.com/Lotus-030226/web-labels.git
@@ -14,7 +14,7 @@ Chrome Manifest V3 擴充功能：選取網頁元素、寫註解，累積後一�
 
 2. 在 Chrome 開啟 `chrome://extensions`。
 3. 開啟「開發人員模式」，按「載入未封裝項目」。
-4. 選擇包含 `manifest.json` 的資料夾。
+4. 選擇解壓後、包含 `manifest.json` 的資料夾。
 5. 保留該資料夾的位置，Chrome 會從這裡載入擴充功能。
 6. 重新載入已開啟的分頁，再開始標註。
 

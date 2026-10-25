@@ -6,7 +6,7 @@ Chrome Manifest V3 扩展程序：选择网页元素、填写注释，累积后�
 
 ## 安装
 
-1. 在 GitHub 点击 **Code → Download ZIP**，下载并解压；或克隆仓库：
+1. 从[最新版本](https://github.com/Lotus-030226/web-labels/releases/latest)下载 `web-labels-<版本>.zip` 并解压；或在仓库页面点击 **Code → Download ZIP**；或克隆仓库：
 
    ```sh
    git clone https://github.com/Lotus-030226/web-labels.git
@@ -14,7 +14,7 @@ Chrome Manifest V3 扩展程序：选择网页元素、填写注释，累积后�
 
 2. 在 Chrome 打开 `chrome://extensions`。
 3. 开启“开发者模式”，点击“加载已解压的扩展程序”。
-4. 选择包含 `manifest.json` 的文件夹。
+4. 选择解压后、包含 `manifest.json` 的文件夹。
 5. 保留该文件夹的位置，Chrome 从这里加载扩展程序。
 6. 重新加载已打开的标签页，再开始标注。
 

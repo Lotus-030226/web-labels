@@ -6,7 +6,8 @@ A Chrome Manifest V3 extension: select page elements, add notes, and copy them t
 
 ## Install
 
-1. On GitHub, click **Code**, then **Download ZIP**, and unzip the archive. Or clone the repository:
+1. Download `web-labels-<version>.zip` from the [latest release](https://github.com/Lotus-030226/web-labels/releases/latest) and unzip it.
+   Or click **Code**, then **Download ZIP** on the repository page. Or clone the repository:
 
    ```sh
    git clone https://github.com/Lotus-030226/web-labels.git
@@ -14,7 +15,7 @@ A Chrome Manifest V3 extension: select page elements, add notes, and copy them t
 
 2. Open `chrome://extensions` in Chrome.
 3. Turn on **Developer mode**. Click **Load unpacked**.
-4. Select the folder that contains `manifest.json`.
+4. Select the unzipped folder that contains `manifest.json`.
 5. Keep that folder in place. Chrome loads the extension from it.
 6. Reload open tabs before you annotate them.
 
