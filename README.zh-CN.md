@@ -63,32 +63,6 @@ Chrome Manifest V3 扩展程序：选择网页元素、填写注释，累积后�
 - 只处理指针点击。网站现有的捕获阶段处理程序可能先于插件执行。
 - 不包含截图、绘图、语音、对外发送或跨浏览器同步。
 
-## 开发
-
-无需构建或安装软件包。运行测试：
-
-```sh
-node --test tests/
-```
-
-如果环境没有 Node.js，请先设置可用的 Node.js 路径。
-
-测试页面操作步骤：
-
-1. 从项目根目录启动服务器：
-
-   ```sh
-   python3 -m http.server 8830 --bind 127.0.0.1 --directory .
-   ```
-
-2. 用 Chrome 打开 `http://127.0.0.1:8830/tests/content/harness.html`。
-3. 在页面或 `window.__lastCopied` 查看复制结果。
-4. 勾选“模擬 Clipboard API 失敗”（模拟 Clipboard API 失败），验证备用复制方式。
-5. 验证结束后停止服务器。
-
-测试页面用模拟的 Chrome API 运行真正的后台脚本；`sessionStorage` 模拟同一标签页的会话。
-页面先注册的 capture 监听器仍可能先收到点击；扩展程序无法保证排在最前。
-
 ## 许可
 
 [MIT](LICENSE)。Copyright (c) 2026 Lotus.

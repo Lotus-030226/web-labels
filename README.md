@@ -67,33 +67,6 @@ Data disappears when the browser session ends or you disable or reload the exten
 - The extension handles pointer clicks only. Website capture handlers can receive clicks before the extension does.
 - The extension has no screenshots, drawing, voice input, external sending, or cross-browser synchronization.
 
-## Development
-
-You do not need a build step or package installation. Run the tests:
-
-```sh
-node --test tests/
-```
-
-If Node.js is unavailable, configure its path first.
-
-To use the test page:
-
-1. From the project root, start the server:
-
-   ```sh
-   python3 -m http.server 8830 --bind 127.0.0.1 --directory .
-   ```
-
-2. In Chrome, open `http://127.0.0.1:8830/tests/content/harness.html`.
-3. Inspect copied results on the page or in `window.__lastCopied`.
-4. Select **模擬 Clipboard API 失敗** to check fallback copying.
-5. Stop the server after verification.
-
-The test page runs the real background script with a fake Chrome API.
-It uses `sessionStorage` to simulate a session in the same tab.
-Previously registered capture listeners can still receive clicks first. The extension cannot guarantee that its handlers run first.
-
 ## License
 
 [MIT](LICENSE). Copyright (c) 2026 Lotus.
