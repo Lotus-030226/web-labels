@@ -30,7 +30,8 @@
     .marker { position: fixed; display: flex; gap: 6px; align-items: flex-start; }
     .badge, .dot { border-radius: 50%; background: #2676ed; box-shadow: 0 2px 5px #0004; }
     .badge { min-width: 28px; height: 28px; padding: 3px 7px; pointer-events: auto; }
-    .bubble { background: #2469ce; padding: 5px 9px; border-radius: 8px; max-width: min(240px, 44vw); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 120px; overflow: auto; pointer-events: auto; }
+    .bubble { background: #2469ce; padding: 5px 9px; border-radius: 8px; max-width: min(140px, 30vw); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: auto; }
+    .bubble:hover { max-width: min(240px, 44vw); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 120px; overflow: auto; }
     .dim { opacity: .5; }
     .dot { position: fixed; width: 12px; height: 12px; }
     .editor { position: fixed; width: min(300px, calc(100vw - 16px)); padding: 12px; background: #24262c; border: 1px solid #555; border-radius: 12px; pointer-events: auto; box-shadow: 0 8px 24px #0005; }
@@ -105,7 +106,8 @@
     surface.hidden = !state.active || !picking || Boolean(pending);
     outline.hidden = surface.hidden || !hovered;
     $('.dot').hidden = !state.active || !pending;
-    $('.count').textContent = `標註中 · ${state.items.length}`;
+    const here = state.items.filter(item => item.url === location.href).length;
+    $('.count').textContent = `標註中 · ${state.items.length}` + (here === state.items.length ? '' : `（本頁 ${here}）`);
     $('.pick').textContent = picking ? '暫停' : '選取';
     $('.pick').setAttribute('aria-label', picking ? '暫停選取' : '繼續選取');
     $('.pick').setAttribute('aria-pressed', String(picking));
