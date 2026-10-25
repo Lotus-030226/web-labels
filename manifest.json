@@ -5,7 +5,19 @@
   "description": "點選網頁元素、撰寫註解，並複製為 Markdown。",
   "permissions": ["storage", "clipboardWrite", "activeTab", "scripting"],
   "background": { "service_worker": "src/background/background.js" },
-  "action": { "default_title": "標註" },
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "32": "assets/icons/icon-32.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
+  "action": {
+    "default_title": "標註",
+    "default_icon": {
+      "16": "assets/icons/icon-16.png",
+      "32": "assets/icons/icon-32.png"
+    }
+  },
   "commands": {
     "toggle-annotate": {
       "suggested_key": { "default": "Alt+Shift+A" },
